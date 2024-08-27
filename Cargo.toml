@@ -11,3 +11,6 @@ serde_json = "1.0"
 tokio = { version = "1.39.3", features = ["full"] }
 dotenv = "0.15"
 mongodb = "3.0.1"
+bcrypt = "0.15.1"
+actix-session = "0.10.0"
+validator = { version = "0.18.1", features = ["derive"] }

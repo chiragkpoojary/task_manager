@@ -17,7 +17,8 @@ async fn main() -> std::io::Result<()> {
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .app_data(mongo_data.clone())
-            .service(routes::sign_in_routes1)
+            .service(routes::sign_in)
+            .service(routes::sign_up)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
