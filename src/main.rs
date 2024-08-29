@@ -1,8 +1,13 @@
-use actix_web::web;
+use actix_web::{web,HttpResponse,Responder,get};
 use mongodb::Client;
 use dotenv::dotenv;
 use std::env;
 mod routes;
+#[get("/")]
+async fn index() -> impl Responder {
+    HttpResponse::Ok().body("Welcome to the Task Manager API")
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -19,8 +24,11 @@ async fn main() -> std::io::Result<()> {
             .app_data(mongo_data.clone())
             .service(routes::sign_in)
             .service(routes::sign_up)
+            .service(routes::addtask)
+            .service(routes::get_tasks)
+            .service(index)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }
