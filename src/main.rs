@@ -22,10 +22,10 @@ async fn main() -> std::io::Result<()> {
     actix_web::HttpServer::new(move || {
         actix_web::App::new()
       .app_data(mongo_data.clone())
-            // .service(routes::sign_in)
-            // .service(routes::sign_up)
+            .service(routes::sign_in)
+            .service(routes::sign_up)
             .service(routes::addtask)
-            .service(routes::get_tasks)
+            // .service(routes::get_tasks)
             .service(routes::delete_task_)
             .service(routes::edit_task_)
             .service(index)

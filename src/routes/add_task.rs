@@ -1,41 +1,55 @@
-use actix_session::Session;
-use actix_web::{post, web, HttpResponse, Responder};
+use actix_web::{web, HttpResponse, Responder, post, HttpRequest};
 use mongodb::{Client, Collection};
+use jwt_simple::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize,Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct Task {
-  
-    // user_email: String,  
+    user_email: String,  // Associate task with the user's email
     task: String,
 }
-#[derive(Debug, Deserialize,Serialize)]
+
+#[derive(Debug, Deserialize)]
 pub struct TaskRequest {
     pub task: String,
 }
 
 #[post("/addtask")]
 pub async fn addtask(
+    req: HttpRequest,
     data: web::Json<TaskRequest>,
     mongo_client: web::Data<Client>,
-    // session: Session,
+    key: web::Data<HS256Key>,
 ) -> impl Responder {
 
-    // if let Some(user_email) = session.get::<String>("user_email").unwrap() {
-        let collection: Collection<Task> = mongo_client.database("task").collection("task");
+    // Extract the token from the Authorization header
+    let token = req.headers().get("Authorization").and_then(|header| {
+        header.to_str().ok().map(|s| s.trim_start_matches("Bearer "))
+    });
 
+    if let Some(token) = token {
+        // Verify the token
+        if let Ok(claims) = key.verify_token::<NoCustomClaims>(token, None) {
+            let user_email = claims.subject.unwrap_or_default();
 
-        let new_task = Task {
-            // user_email,
-            task: data.task.clone(),
-        };
+            // Access the MongoDB collection
+            let collection: Collection<Task> = mongo_client.database("task").collection("tasks");
 
-       
-        match collection.insert_one(new_task).await {
-            Ok(_) => HttpResponse::Ok().json("Task added successfully"),
-            Err(e) => HttpResponse::InternalServerError().json(format!("Failed to add task: {}", e)),
+            // Create a new task with the user's email
+            let new_task = Task {
+                user_email,
+                task: data.task.clone(),
+            };
+
+            // Insert the task into the database
+            match collection.insert_one(new_task).await {
+                Ok(_) => HttpResponse::Ok().json("Task added successfully"),
+                Err(e) => HttpResponse::InternalServerError().json(format!("Failed to add task: {}", e)),
+            }
+        } else {
+            HttpResponse::Unauthorized().json("Invalid token")
         }
-    // } else {
-    //     HttpResponse::Unauthorized().json("User not logged in")
-    // }
+    } else {
+        HttpResponse::Unauthorized().json("Authorization token is missing")
+    }
 }
