@@ -53,7 +53,8 @@ use jwt_simple::prelude::*;
             let token = key.authenticate(claims).unwrap();
 
             // Return the token in the response
-            return HttpResponse::Ok().json(AuthResponse { token });             }
+            return HttpResponse::Ok().json(AuthResponse { token });            
+             }
              Ok(false) => HttpResponse::Unauthorized().json("Invalid  password"),
              Err(e) => HttpResponse::InternalServerError().json(format!("Password verification failed: {}", e)),
          }

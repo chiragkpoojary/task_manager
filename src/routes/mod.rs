@@ -7,8 +7,8 @@ pub use sign_up_routes::sign_up;
 pub mod add_task;
 pub use add_task::addtask;
 
-// pub mod send_task;
-// pub use send_task::get_tasks;
+pub mod send_task;
+pub use send_task::get_tasks;
 
 pub mod delete_task;
 pub  use delete_task::delete_task_;

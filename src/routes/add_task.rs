@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Task {
-    user_email: String,  // Associate task with the user's email
+    user_email: String,  
     task: String,
 }
 
@@ -22,14 +22,14 @@ pub async fn addtask(
     key: web::Data<HS256Key>,
 ) -> impl Responder {
 
-    // Extract the token from the Authorization header
+    // Extract and verify the access token
     let token = req.headers().get("Authorization").and_then(|header| {
         header.to_str().ok().map(|s| s.trim_start_matches("Bearer "))
     });
 
     if let Some(token) = token {
-        // Verify the token
         if let Ok(claims) = key.verify_token::<NoCustomClaims>(token, None) {
+            // Extract the user's email from the token claims
             let user_email = claims.subject.unwrap_or_default();
 
             // Access the MongoDB collection
