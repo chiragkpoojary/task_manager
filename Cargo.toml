@@ -17,3 +17,8 @@ jwt-simple = "0.12.10"
 validator = { version = "0.14", features = ["derive"] }
 validator_derive = "0.14"
 actix-cors = "0.7.0"
+futures = "0.3.30"
+actix-service = "2.0.2"
+jsonwebtoken = "9.3.0"
+actix-web-httpauth = "0.8.2"
+actix-http = "3.9.0"

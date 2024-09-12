@@ -4,6 +4,7 @@ use dotenv::dotenv;
 use std::env;
 mod routes;
  use actix_cors::Cors;
+ use actix_web_httpauth::middleware::HttpAuthentication;
 
 use jwt_simple::prelude::*;
 #[get("/")]
@@ -24,20 +25,20 @@ async fn main() -> std::io::Result<()> {
     let mongo_data = web::Data::new(mongo_client);
      let key_data = web::Data::new(key);
 
-    actix_web::HttpServer::new(move || {
-        actix_web::App::new()
+   actix_web::HttpServer::new(move || {
+       actix_web:: App::new()
             .wrap(Cors::permissive())
-      .app_data(mongo_data.clone())
-      .app_data(key_data.clone())
+            // .wrap(HttpAuthentication::bearer(routes::validator))
+            .app_data(mongo_data.clone())
+            .app_data(key_data.clone())
             .service(routes::sign_in)
             .service(routes::sign_up)
             .service(routes::addtask)
             .service(routes::get_tasks)
             .service(routes::delete_task_)
             .service(routes::edit_task_)
-            .service(index)
     })
-    .bind(("0.0.0.0", 8080))?
+          .bind(("127.0.0.1", 8080))?
     .run()
     .await
 }
