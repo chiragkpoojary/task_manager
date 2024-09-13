@@ -18,7 +18,7 @@ pub async fn delete_task_(
     mongo_client: web::Data<Client>,
 ) -> HttpResponse {
   
-    let tasks_collection: Collection<Task> = mongo_client.database("task").collection("task");
+            let collection: Collection<Task> = mongo_client.database("task").collection("tasks");
 
     // Convert the string ID to an ObjectId
     let obj_id = match ObjectId::parse_str(&path.id) {
@@ -26,8 +26,11 @@ pub async fn delete_task_(
         Err(_) => return HttpResponse::BadRequest().json("Invalid ID format"),
     };
 
+
     let filter = doc! { "_id": obj_id };
-    match tasks_collection.delete_one(filter).await {
+
+
+    match collection.delete_one(filter).await {
         Ok(result) => {
             if result.deleted_count == 1 {
                 HttpResponse::Ok().json("Task deleted successfully")

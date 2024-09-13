@@ -19,7 +19,8 @@ pub async fn edit_task_(
     updated_task: web::Json<Task>,
 ) -> HttpResponse {
    
-    let tasks_collection: Collection<Task> = mongo_client.database("task").collection("task");
+                let collection: Collection<Task> = mongo_client.database("task").collection("tasks");
+
 
     // Convert the string ID to an ObjectId
     let obj_id = match ObjectId::parse_str(&path.id) {
@@ -31,7 +32,8 @@ pub async fn edit_task_(
     let filter = doc! { "_id": obj_id };
     let update = doc! { "$set": { "task": &updated_task.task } };
 
-    match tasks_collection.update_one(filter, update).await {
+   
+    match collection.update_one(filter, update).await {
         Ok(result) => {
             if result.matched_count == 1 {
                 HttpResponse::Ok().json("Task edited successfully")
