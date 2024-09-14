@@ -4,7 +4,6 @@ use dotenv::dotenv;
 use std::env;
 mod routes;
  use actix_cors::Cors;
- use actix_web_httpauth::middleware::HttpAuthentication;
 
 use jwt_simple::prelude::*;
 #[get("/")]

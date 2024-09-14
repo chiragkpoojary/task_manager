@@ -1,5 +1,4 @@
-use actix_web::{get, web, HttpResponse, Responder,HttpRequest};
-use jwt_simple::prelude::*;
+use actix_web::{get, web, HttpResponse, Responder};
 use mongodb::{bson::doc, Client, Collection};
 use serde::{Deserialize, Serialize};
 use mongodb::bson::oid::ObjectId;

@@ -1,6 +1,5 @@
-use actix_web::{web, HttpResponse, Responder, post, HttpRequest};
+use actix_web::{web, HttpResponse, Responder, post};
 use mongodb::{Client, Collection};
-use jwt_simple::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -16,7 +15,6 @@ pub struct TaskRequest {
 
 #[post("/addtask")]
 pub async fn addtask(
-    req: HttpRequest,
     data: web::Json<TaskRequest>,
     mongo_client: web::Data<Client>,
     // key: web::Data<HS256Key>,
