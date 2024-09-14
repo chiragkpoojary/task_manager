@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::delete_task_)
             .service(routes::edit_task_)
     })
-          .bind(("127.0.0.1", 8080))?
+          .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }

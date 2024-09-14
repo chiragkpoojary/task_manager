@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  app:
+    image: chiragkpoojary/rust-task:optimized
+    ports:
+      - "8080:8080"
+    secrets:
+      - mongodb_uri
+secrets:
+  mongodb_uri:
+    external: true
