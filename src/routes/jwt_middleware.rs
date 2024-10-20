@@ -1,22 +1,20 @@
-use actix_web::{dev::ServiceRequest, Error};
+use actix_web::Error;
 
-use actix_web_httpauth::headers::authorization::{Authorization, Bearer};
 use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use serde::Deserialize;
 use std::env;
-
 
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 
 // Struct representing the JWT Claims
 #[derive(Debug, Deserialize)]
-struct Claims {
-    sub: String, // Subject (user ID or email)
-    exp: usize,  // Expiration timestamp
+pub struct Claims {
+    pub sub: String, // Subject (user ID or email)
+    pub exp: usize,  // Expiration timestamp
 }
 
 // Function to validate JWT
-pub async fn validator(req: &ServiceRequest, auth: BearerAuth) -> Result<(), Error> {
+pub async fn validator(auth: &BearerAuth) -> Result<Claims, Error> {
     let token = auth.token();
 
     let secret_key = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
@@ -24,7 +22,7 @@ pub async fn validator(req: &ServiceRequest, auth: BearerAuth) -> Result<(), Err
     let validation = Validation::new(Algorithm::HS256);
 
     match decode::<Claims>(token, &decoding_key, &validation) {
-        Ok(_) => Ok(()),
+        Ok(token_data) => Ok(token_data.claims),
         Err(_) => Err(actix_web::error::ErrorUnauthorized("Invalid token")),
     }
 }

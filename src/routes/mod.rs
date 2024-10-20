@@ -11,11 +11,9 @@ pub mod send_task;
 pub use send_task::get_tasks;
 
 pub mod delete_task;
-pub  use delete_task::delete_task_;
+pub use delete_task::delete_task_;
 
 pub mod edit_task;
 pub use edit_task::edit_task_;
 
-// pub mod jwt_middleware;
-// pub use jwt_middleware::validator;
-
+pub mod jwt_middleware;
