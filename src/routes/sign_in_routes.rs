@@ -1,3 +1,4 @@
+use actix_web::cookie::Cookie;
 use actix_web::{post, web, HttpResponse, Responder};
 use bcrypt::verify;
 use jwt_simple::prelude::*;
@@ -59,9 +60,15 @@ pub async fn sign_in(
                     .json(format!("Token generation failed: {}", e))
             }
         };
-
+        let token_cookie = Cookie::build("token", token.clone())
+            .http_only(true)
+            .secure(true)
+            .same_site(actix_web::cookie::SameSite::Strict)
+            .finish();
         // Return the token in the response
-        HttpResponse::Ok().json(AuthResponse { token })
+        HttpResponse::Ok()
+            .cookie(token_cookie)
+            .json(AuthResponse { token })
     } else {
         HttpResponse::Unauthorized().json("Invalid email or password")
     }
