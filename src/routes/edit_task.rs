@@ -26,7 +26,7 @@ pub async fn edit_task_(
 ) -> impl Responder {
     match validator(&auth).await {
         Ok(claims) => {
-            let user_email = claims.sub;
+            let _user_email = claims.sub;
 
             let collection: Collection<Task> = mongo_client.database("task").collection("tasks");
 

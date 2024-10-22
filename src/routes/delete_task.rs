@@ -14,7 +14,7 @@ struct PathInfo {
 
 #[derive(Deserialize)]
 struct Task {
-    task: String,
+    _task: String,
 }
 
 #[delete("/delete/{id}")]
@@ -24,7 +24,7 @@ pub async fn delete_task_(
     auth: BearerAuth,
 ) -> impl Responder {
     match validator(&auth).await {
-        Ok(claims) => {
+        Ok(_claims) => {
             let obj_id = match ObjectId::parse_str(&path.id) {
                 Ok(oid) => oid,
                 Err(_) => return HttpResponse::BadRequest().json("Invalid ID format"),

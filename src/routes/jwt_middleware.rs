@@ -6,14 +6,14 @@ use std::env;
 
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 
-// Struct representing the JWT Claims
+
 #[derive(Debug, Deserialize)]
 pub struct Claims {
-    pub sub: String, // Subject (user ID or email)
-    pub exp: usize,  // Expiration timestamp
+    pub sub: String, 
+    pub _exp: usize,  
 }
 
-// Function to validate JWT
+
 pub async fn validator(auth: &BearerAuth) -> Result<Claims, Error> {
     let token = auth.token();
 
